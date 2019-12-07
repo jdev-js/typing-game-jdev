@@ -47,7 +47,7 @@ $resultContainer.style.display = 'none'
 
 $initGame.querySelector('p').innerHTML = `${wordsData
   .toSorted(() => Math.random() - 0.5)
-  .slice(0, 30)
+  .slice(0, 50)
   .map((word, index) => {
     const letters = word.split('')
     return `<word>
@@ -64,7 +64,7 @@ function initGame() {
   $game.style.display = 'flex'
   $resultContainer.style.display = 'none'
   $header.style.display = 'none'
-  words = wordsData.toSorted(() => Math.random() - 0.5).slice(0, 30)
+  words = wordsData.toSorted(() => Math.random() - 0.5).slice(0, 50)
 
   // Inicializar los datos del juego
   wordsInfo = words.length
