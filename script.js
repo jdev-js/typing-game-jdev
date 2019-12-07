@@ -1,19 +1,53 @@
-const $time = document.querySelector('time')
-const $paragraph = document.querySelector('p')
+import { data as wordsData } from './data.js'
+
+const $infoGame = document.querySelector('.info-game')
+const $paragraph = document.querySelector('.text-game')
 const $input = document.querySelector('input')
+const $header = document.querySelector('header')
 const $game = document.querySelector('#game')
 const $initGame = document.querySelector('#init-game')
 const $resultContainer = document.querySelector('#result')
+const $tabOption = document.querySelectorAll('header ul li')
+const $buttonRetry = document.querySelector('#retry-game')
 
-const TEXT = `const string = "jesus"; const number = 20 function print(msg) => console.log(msg)`
-const INITIAL_TIME = 30
-
-let init_game = false
 let words = []
 let currentTime
+let wordsInfo = 0
+let currentWordsInfo = 0
+let activeOption = ''
 
-$game.querySelector('p').innerHTML = `${TEXT.split(' ')
-  .slice(0, 32)
+$buttonRetry.addEventListener('click', () => {
+  initGame()
+})
+
+$initGame.addEventListener('click', () => {
+  initGame()
+  initEvent()
+})
+
+$initGame.addEventListener('keydown', () => {
+  initGame()
+  initEvent()
+})
+
+$tabOption.forEach((tab) => {
+  tab.addEventListener('click', () => {
+    $tabOption.forEach((tab) => {
+      tab.classList.remove('active')
+    })
+    tab.classList.add('active')
+    activeOption = tab.textContent.trim().toLowerCase()
+  })
+})
+
+const INITIAL_TIME = 30
+
+$game.style.display = 'none'
+$resultContainer.style.display = 'none'
+
+$initGame.querySelector('p').innerHTML = `${wordsData
+  .toSorted(() => Math.random() - 0.5)
+  .slice(0, 30)
   .map((word, index) => {
     const letters = word.split('')
     return `<word>
@@ -22,25 +56,25 @@ $game.querySelector('p').innerHTML = `${TEXT.split(' ')
   })
   .join('')}`
 
-if (init_game === false) {
-  $game.style.filter = 'blur(2px)'
-  $initGame.addEventListener('click', () => {
-    init_game = true
-    $game.style.filter = 'none'
-    $initGame.style.display = 'none'
-    $initGame.innerHTML = ''
-    initGame()
-    initEvent()
-  })
-}
-
 function initGame() {
+  currentWordsInfo = 0
+  wordsInfo = 0
   $input.value = ''
+  $initGame.style.display = 'none'
   $game.style.display = 'flex'
   $resultContainer.style.display = 'none'
-  words = TEXT.split(' ').slice(0, 32)
+  $header.style.display = 'none'
+  words = wordsData.toSorted(() => Math.random() - 0.5).slice(0, 30)
+
+  // Inicializar los datos del juego
+  wordsInfo = words.length
   currentTime = INITIAL_TIME
-  $time.textContent = currentTime
+
+  if (activeOption === 'time') {
+    $infoGame.textContent = currentTime
+  } else {
+    $infoGame.textContent = `${currentWordsInfo}/${wordsInfo}`
+  }
 
   $paragraph.innerHTML = words
     .map((word, index) => {
@@ -57,15 +91,18 @@ function initGame() {
   $firstWord.classList.add('active')
   $firstWord.querySelector('letter').classList.add('active')
 
-  const intervalId = setInterval(() => {
-    currentTime -= 1
-    $time.textContent = currentTime
+  if (activeOption === 'time') {
+    const intervalId = setInterval(() => {
+      currentTime -= 1
+      renderInfo()
+      console.log('render')
 
-    if (currentTime === 0) {
-      gameOver()
-      clearInterval(intervalId)
-    }
-  }, 1000)
+      if (currentTime === 0) {
+        gameOver()
+        clearInterval(intervalId)
+      }
+    }, 1000)
+  }
 }
 
 function initEvent() {
@@ -122,6 +159,8 @@ function onKeyDown(event) {
     $nextLetter.classList.add('active')
 
     $input.value = ''
+    currentWordsInfo += 1
+    renderInfo()
 
     const hasMissingLetters =
       $currentWord.querySelectorAll('letter:not(.correct)').length > 0
@@ -165,10 +204,18 @@ function onKeyDown(event) {
   }
 }
 
+function renderInfo() {
+  if (activeOption === 'time') {
+    $infoGame.textContent = currentTime
+  } else {
+    $infoGame.textContent = `${currentWordsInfo}/${wordsInfo}`
+  }
+}
+
 function gameOver() {
   const $buttonReload = document.querySelector('#result > button')
-  const $wpm = document.querySelector('.wpm')
-  const $accuracy = document.querySelector('.accuracy')
+  const $wpm = document.querySelector('#wpm')
+  const $accuracy = document.querySelector('#acc')
 
   // calcular las estadisticas del usuario
   const correctWord = $paragraph.querySelectorAll('word.correct').length
@@ -180,11 +227,10 @@ function gameOver() {
   const wpm = (correctWord * 60) / 10
 
   // Mostrar resultado
-  $wpm.innerHTML = `wpm: <span>${wpm}</span>`
-  $accuracy.innerHTML = `accuracy: <span>${accuracy.toFixed(2)}%</span>`
+  $wpm.innerText = `${wpm}`
+  $accuracy.innerText = `${accuracy.toFixed(2)}%`
 
   $game.style.display = 'none'
   $resultContainer.style.display = 'flex'
   $buttonReload.addEventListener('click', () => initGame())
-  init_game = false
 }
