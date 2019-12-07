@@ -6,193 +6,76 @@
     <title>⌨️Typing Game</title>
     <link rel="stylesheet" href="./style.css">
 </head>
-<body>
-     <main>
-      <section id="init-game">
-      </section>
-      <section id="game">
-        <time></time>
-        <p></p>
-        <input type="text" autofocus>
-      </section>
-      <section id="result">
-        <h4 class="wpm"></h4>
-        <h4 class="accuracy"></h4>
-        <button>Reload</button>
-      </section>
-    </main>   
-    <script>
-      const $time = document.querySelector('time')
-      const $paragraph = document.querySelector('p')
-      const $input = document.querySelector('input')
-      const $game = document.querySelector('#game')
-      const $initGame = document.querySelector('#init-game')
-      const $resultContainer = document.querySelector('#result')
+<body> 
+  <header>
+    <div>
+      <svg viewBox="0 0 576 512">
+        <path
+          d="M64 64C28.7 64 0 92.7 0 128V384c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H64zm16 64h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V144c0-8.8 7.2-16 16-16zM64 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V240zm16 80h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V336c0-8.8 7.2-16 16-16zm80-176c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V144zm16 80h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V240c0-8.8 7.2-16 16-16zM160 336c0-8.8 7.2-16 16-16H400c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V336zM272 128h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H272c-8.8 0-16-7.2-16-16V144c0-8.8 7.2-16 16-16zM256 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H272c-8.8 0-16-7.2-16-16V240zM368 128h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H368c-8.8 0-16-7.2-16-16V144c0-8.8 7.2-16 16-16zM352 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H368c-8.8 0-16-7.2-16-16V240zM464 128h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H464c-8.8 0-16-7.2-16-16V144c0-8.8 7.2-16 16-16zM448 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H464c-8.8 0-16-7.2-16-16V240zm16 80h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H464c-8.8 0-16-7.2-16-16V336c0-8.8 7.2-16 16-16z" />
+      </svg>
+      <h2>jdevTyping</h2>
+    </div>
+    <nav>
+      <ul>
+        <li class="active" id="option-active"><svg viewBox="0 0 512 512">
+          <path
+            d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z" />
+        </svg>Time</li>
+        <li> <svg viewBox="0 0 576 512">
+          <path
+            d="M20.8 34c16.5-6.2 35 2.2 41.2 18.7l110.2 294L257.3 55c4-13.7 16.5-23 30.7-23s26.7 9.4 30.7 23l85.1 291.7L514 52.8c6.2-16.5 24.6-24.9 41.2-18.7s24.9 24.7 18.7 41.2l-144 384c-4.8 12.9-17.4 21.3-31.2 20.7s-25.7-9.8-29.5-23L288 178.3 206.7 457c-3.9 13.2-15.8 22.5-29.5 23s-26.3-7.8-31.2-20.7L2 75.2C-4.2 58.7 4.2 40.2 20.8 34z" />
+        </svg>Word</li>
+      </ul>
+    </nav>
+  </header>
 
-      const TEXT = `lorem ipsum dolor sit amet consectetur, adipisicing elit. amet quasi vero impedit voluptatum perspiciatis. pariatur vitae architecto deserunt possimus. pariatur ut porro ipsam, voluptatibus dolore tempora deserunt dicta eius nulla?`
-      const INITIAL_TIME = TEXT.split('').length - 2
-      
-      let init_game = false
-      let words = []
-      let currentTime
+  <section id="init-game">
+    <div>Click here or press any key to focus</div>
+    <p></p>
+  </section>
 
-      if(init_game === false){
-        $initGame.addEventListener('click',() => {
-          init_game = true
-          $initGame.style.display = 'none'
-        })
-      }
+  <section id="game">
+    <h4 class="info-game"></h4>
+    <p class="text-game"></p>
+    <input autofocus/>
+    <button id="retry-game">
+      <svg viewBox="0 0 512 512">
+        <path
+          d="M125.7 160H176c17.7 0 32 14.3 32 32s-14.3 32-32 32H48c-17.7 0-32-14.3-32-32V64c0-17.7 14.3-32 32-32s32 14.3 32 32v51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z" />
+      </svg>
+    </button>
+  </section>
 
-      if(init_game === true){
-        initGame()
-        initEvent()
-      }
+  <section id="result">
+    <div>
+      <h4>wpm</h4>
+      <p id="wpm"></p>
+    </div>
+    <div>
+      <h4>acc</h4>
+      <p id="acc"></p>
+    </div>
+    <button>
+      <svg viewBox="0 0 512 512">
+        <path
+          d="M125.7 160H176c17.7 0 32 14.3 32 32s-14.3 32-32 32H48c-17.7 0-32-14.3-32-32V64c0-17.7 14.3-32 32-32s32 14.3 32 32v51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z" />
+      </svg>
+    </button>
+  </section>
 
-      function initGame() {
-        $input.value = ""
-        $game.style.display = 'flex'
-        $resultContainer.style.display = 'none'
-        words = TEXT.split(' ').slice(0, 32)
-        currentTime = INITIAL_TIME
-        $time.textContent = currentTime
+  <footer>
+    <nav>
+      <ul>
+        <li><svg viewBox="0 0 496 512">
+          <path
+            d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z" />
+        </svg><a>Github</a></li>
+      </ul>
+    </nav>
+    <h4>Hecho por Jdev-js❤️</h4>
+  </footer>
 
-        $paragraph.innerHTML = words.map((word, index) => {
-          const letters = word.split("")
-          return `<word>
-              ${letters.map((letter) => `<letter>${letter}</letter>`).join('')
-            }
-            </word>`
-        }).join('')
+  <script type="module" src="./script.js"></script>
 
-        const $firstWord = $paragraph.querySelector('word')
-        $firstWord.classList.add('active')
-        $firstWord.querySelector('letter').classList.add('active')
-
-        const intervalId = setInterval(() => {
-          currentTime -= 1
-          $time.textContent = currentTime
-
-          if (currentTime === 0) {
-            gameOver()
-            clearInterval(intervalId)
-          }
-        }, 1000)
-      }
-
-      function initEvent() {
-        document.addEventListener('keydown', () => {
-          $input.focus()
-        })
-        $input.addEventListener('keydown', onKeyDown)
-        $input.addEventListener('keyup', onKeyUp)
-      }
-      function onKeyUp() {
-        const $currentWord = $paragraph.querySelector('word.active')
-        const $currentLetter = $currentWord.querySelector('letter.active')
-
-        console.log($currentWord)
-
-        const currentWord = $currentWord.innerText.trim()
-        $input.maxLength = currentWord.length
-
-        const $allLetters = $currentWord.querySelectorAll('letter')
-
-        $allLetters.forEach(($letter) => $letter.classList.remove('correct', 'incorrect'))
-
-        $input.value.split('').forEach((char, index) => {
-          const $letter = $allLetters[index]
-          const letterToCheck = currentWord[index]
-
-          const isCorrect = char === letterToCheck
-          const letterClass = isCorrect ? 'correct' : 'incorrect'
-          $letter.classList.add(letterClass)
-        })
-        $currentLetter.classList.remove('active')
-        const inputLength = $input.value.length
-        const $nextActiveLetter = $allLetters[inputLength]
-
-        if ($nextActiveLetter) {
-          $nextActiveLetter.classList.add('active')
-        } else {
-          $currentLetter.classList.add('active', 'is-last')
-        }
-      }
-      function onKeyDown(event) {
-        const $currentWord = $paragraph.querySelector('word.active')
-        const $currentLetter = $currentWord.querySelector('letter.active')
-        const { key } = event
-        if (key === ' ') {
-          event.preventDefault()
-          const $nextWord = $currentWord.nextElementSibling
-          const $nextLetter = $nextWord.querySelector('letter')
-
-          $currentWord.classList.remove('active', 'marked')
-          $currentLetter.classList.remove('active')
-
-          $nextWord.classList.add('active')
-          $nextLetter.classList.add('active')
-
-          $input.value = ''
-
-          const hasMissingLetters = $currentWord.querySelectorAll('letter:not(.correct)').length > 0
-          const classToAdd = hasMissingLetters ? 'marked' : 'correct'
-          $currentWord.classList.add(classToAdd)
-          return
-        }
-        if (key === "Backspace") {
-          const $prevWord = $currentWord.previousElementSibling
-          const $prevLetter = $currentLetter?.previousElementSibling
-
-          if (!$prevWord && !$prevLetter) {
-            event.preventDefault()
-            return
-          }
-
-          const $wordMarked = $paragraph.querySelector('word.marked')
-          if ($wordMarked && !$prevLetter) {
-            event.preventDefault()
-            $prevWord.classList.remove('marked')
-            $prevWord.classList.add('active')
-
-            const $letterToGo = $prevWord.querySelector('letter:last-child')
-
-            $currentLetter.classList.remove('active')
-            $letterToGo.classList.add('active')
-
-            $input.value = [
-              ...$prevWord.querySelectorAll('letter.correct, letter.incorrect')
-            ].map(($el) => {
-              return $el.classList.contains('correct') ? $el.innerText : '*'
-            }).join('')
-          }
-        }
-      }
-
-      function gameOver(){
-        const $buttonReload = document.querySelector('#result > button')
-        const $wpm = document.querySelector('.wpm')
-        const $accuracy = document.querySelector('.accuracy')
-
-        // calcular las estadisticas del usuario
-        const correctWord = $paragraph.querySelectorAll('word.correct').length 
-        const correctLetter = $paragraph.querySelectorAll('letter.correct').length 
-        const incorrectLetter = $paragraph.querySelectorAll('letter.incorrect').length 
-
-        const totalLetters = incorrectLetter + correctLetter
-        const accuracy = totalLetters > 0 ? (correctLetter / totalLetters) * 100 :0
-        const wpm = correctWord * 60 / 10
-
-        console.log({$wpm,$accuracy})
-
-        // Mostrar resultado
-        $wpm.innerHTML = `wpm: <span>${wpm}</span>`
-        $accuracy.innerHTML = `accuracy: <span>${accuracy.toFixed(2)}%</span>`
-
-        $game.style.display = 'none'
-        $resultContainer.style.display = 'flex'
-        $buttonReload.addEventListener('click', () => initGame())
-        init_game = false
-      }
-    </script>
 </body>
 </html>
