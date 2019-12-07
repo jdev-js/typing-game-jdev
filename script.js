@@ -10,11 +10,18 @@ const $resultContainer = document.querySelector('#result')
 const $tabOption = document.querySelectorAll('header ul li')
 const $buttonRetry = document.querySelector('#retry-game')
 
+const INITIAL_TIME = 52
 let words = []
 let currentTime
 let wordsInfo = 0
 let currentWordsInfo = 0
 let activeOption = ''
+
+$tabOption.forEach((tab) => {
+  if (tab.className === 'active') {
+    activeOption = tab.textContent.trim().toLowerCase()
+  }
+})
 
 $buttonRetry.addEventListener('click', () => {
   initGame()
@@ -39,8 +46,6 @@ $tabOption.forEach((tab) => {
     activeOption = tab.textContent.trim().toLowerCase()
   })
 })
-
-const INITIAL_TIME = 30
 
 $game.style.display = 'none'
 $resultContainer.style.display = 'none'
