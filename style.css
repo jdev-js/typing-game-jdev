@@ -1,0 +1,119 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+:root{
+    color-scheme: light dark;
+    --red: #ca4754;
+    --green: #00ff73;
+    --black: #313131;
+    --gray: #838383;
+    --white: #ffff;
+}
+
+body{
+    font-family: 'JetBrains Mono';
+    background-color: var(--black);
+    display: grid;
+    padding: 32px; 
+    justify-content: center;
+    margin-top: 60px;
+}
+
+section {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 900px;
+}
+
+time{
+    color: var(--green);
+}
+
+p{
+    flex-wrap: wrap;
+    display: flex;
+    gap: 3px 6px;
+}
+
+letter{
+    color: var(--gray);
+    position: relative;
+    &.active.is-last::before{
+        left: 65%;
+    }
+    &.active::before{
+        content: '|';
+        position: absolute;
+        left: -65%;
+        color: var(--green);
+        animation: 1s blink infinite ease-in-out;
+        transition: all ease-in-out 100ms;
+    }
+    &.correct{
+        color: var(--white)
+    }
+    &.incorrect{
+        color: var(--red)
+    }
+}
+
+word{
+    border-bottom: 2px solid transparent;
+    transition: 300ms ease-in-out border-color;
+    &.marked{
+        border-color: var(--red);
+    }
+}
+
+@keyframes blink {
+    0%,25%{
+        opacity: 1;
+        transform: scaleY(1);
+    }
+    75%{
+        opacity: 0;
+        transform: scaleY(0);
+    }
+}
+
+#game{
+    display: flex;
+}
+
+#init-game{
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top:0;
+    left: 0;
+    background-color: transparent;
+    backdrop-filter: blur(2px);
+}
+
+#result{
+    display: none;
+}
+.wpm,.accuracy {
+    text-transform: uppercase;
+    color: var(--gray);
+    font-size: 20px;
+
+    & > span {
+        color: var(--green)
+    }
+}
+
+section input{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: -9999;
+    pointer-events: none;
+    opacity: 0;
+}
